@@ -16,7 +16,7 @@
  *     Bosch Software Innovations GmbH, - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.leshan.client.demo;
+package org.eclipse.leshan.client;
 
 import static org.eclipse.leshan.LwM2mId.*;
 import static org.eclipse.leshan.client.object.Security.*;
@@ -40,7 +40,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.eclipse.californium.core.network.config.NetworkConfig;
 import org.eclipse.leshan.LwM2m;
-import org.eclipse.leshan.client.californium.LeshanClient;
 import org.eclipse.leshan.client.californium.LeshanClientBuilder;
 import org.eclipse.leshan.client.object.Server;
 import org.eclipse.leshan.client.resource.LwM2mObjectEnabler;
@@ -54,14 +53,16 @@ import org.eclipse.leshan.util.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LeshanClientDemo {
+public class LeshanClient {
 
-    private static final Logger LOG = LoggerFactory.getLogger(LeshanClientDemo.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LeshanClient.class);
 
-    private final static String[] modelPaths = new String[] { "3303.xml" };
+    private final static String[] modelPaths = new String[] { "3303.xml", "3311.xml" };
 
     private static final int OBJECT_ID_TEMPERATURE_SENSOR = 3303;
-    private final static String DEFAULT_ENDPOINT = "LeshanClientDemo";
+    private static final int OBJECT_ID_LED = 3311;
+
+    private final static String DEFAULT_ENDPOINT = "LeshanClient";
     private final static String USAGE = "java -jar leshan-client-demo.jar [OPTION]\n\n";
 
     private static MyLocation locationInstance;
@@ -360,7 +361,8 @@ public class LeshanClientDemo {
         }
         initializer.setInstancesForObject(DEVICE, new MyDevice());
         initializer.setInstancesForObject(LOCATION, locationInstance);
-        initializer.setInstancesForObject(OBJECT_ID_TEMPERATURE_SENSOR, new RandomTemperatureSensor());
+        initializer.setInstancesForObject(OBJECT_ID_TEMPERATURE_SENSOR, new TemperatureSensor());
+        initializer.setInstancesForObject(OBJECT_ID_LED,new LedSensor());
         List<LwM2mObjectEnabler> enablers = initializer.createAll();
 
         // Create CoAP Config
@@ -379,7 +381,7 @@ public class LeshanClientDemo {
         builder.setLocalAddress(localAddress, localPort);
         builder.setObjects(enablers);
         builder.setCoapConfig(coapConfig);
-        final LeshanClient client = builder.build();
+        final org.eclipse.leshan.client.californium.LeshanClient client = builder.build();
 
         // Display client public key to easily add it in demo servers.
         if (clientPublicKey != null) {

@@ -1,4 +1,4 @@
-package org.eclipse.leshan.client.demo;
+package org.eclipse.leshan.client;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;

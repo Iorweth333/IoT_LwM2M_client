@@ -1,4 +1,5 @@
-/Users/szymon/AGH/6/iot-test/leshan/leshan-client-demo/src/main/java/org/eclipse/leshan/client/demo/LeshanClientDemo.java
-/Users/szymon/AGH/6/iot-test/leshan/leshan-client-demo/src/main/java/org/eclipse/leshan/client/demo/MyLocation.java
-/Users/szymon/AGH/6/iot-test/leshan/leshan-client-demo/src/main/java/org/eclipse/leshan/client/demo/RandomTemperatureSensor.java
-/Users/szymon/AGH/6/iot-test/leshan/leshan-client-demo/src/main/java/org/eclipse/leshan/client/demo/MyDevice.java
+/Users/szymon/AGH/6/IOT/IoT_LwM2M_client/src/main/java/org/eclipse/leshan/client/TemperatureSensor.java
+/Users/szymon/AGH/6/IOT/IoT_LwM2M_client/src/main/java/org/eclipse/leshan/client/MyLocation.java
+/Users/szymon/AGH/6/IOT/IoT_LwM2M_client/src/main/java/org/eclipse/leshan/client/MyDevice.java
+/Users/szymon/AGH/6/IOT/IoT_LwM2M_client/src/main/java/org/eclipse/leshan/client/LeshanClient.java
+/Users/szymon/AGH/6/IOT/IoT_LwM2M_client/src/main/java/org/eclipse/leshan/client/LedSensor.java

@@ -1,10 +1,10 @@
-package org.eclipse.leshan.client.demo;
+package org.eclipse.leshan.client;
 
+import java.io.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -16,7 +16,7 @@ import org.eclipse.leshan.core.response.ExecuteResponse;
 import org.eclipse.leshan.core.response.ReadResponse;
 import org.eclipse.leshan.util.NamedThreadFactory;
 
-public class RandomTemperatureSensor extends BaseInstanceEnabler {
+public class TemperatureSensor extends BaseInstanceEnabler {
 
     private static final String UNIT_CELSIUS = "cel";
     private static final int SENSOR_VALUE = 5700;
@@ -27,12 +27,11 @@ public class RandomTemperatureSensor extends BaseInstanceEnabler {
     private static final List<Integer> supportedResources = Arrays.asList(SENSOR_VALUE, UNITS, MAX_MEASURED_VALUE,
             MIN_MEASURED_VALUE, RESET_MIN_MAX_MEASURED_VALUES);
     private final ScheduledExecutorService scheduler;
-    private final Random rng = new Random();
     private double currentTemp = 20d;
     private double minMeasuredValue = currentTemp;
     private double maxMeasuredValue = currentTemp;
 
-    public RandomTemperatureSensor() {
+    public TemperatureSensor() {
         this.scheduler = Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory("Temperature Sensor"));
         scheduler.scheduleAtFixedRate(new Runnable() {
 
@@ -76,13 +75,34 @@ public class RandomTemperatureSensor extends BaseInstanceEnabler {
     }
 
     private synchronized void adjustTemperature() {
-        float delta = (rng.nextInt(20) - 10) / 10f;
-        currentTemp += delta;
-        Integer changedResource = adjustMinMaxMeasuredValue(currentTemp);
-        if (changedResource != null) {
-            fireResourcesChange(SENSOR_VALUE, changedResource);
-        } else {
-            fireResourcesChange(SENSOR_VALUE);
+        BufferedReader reader = null;
+        try {
+            Process p = Runtime.getRuntime().exec("python temp.py");
+            File file = new File("temp.txt");
+
+            reader = new BufferedReader(new FileReader(file));
+            currentTemp = Double.parseDouble(reader.readLine().trim());
+
+            Integer changedResource = adjustMinMaxMeasuredValue(currentTemp);
+            if (changedResource != null) {
+                fireResourcesChange(SENSOR_VALUE, changedResource);
+            } else {
+                fireResourcesChange(SENSOR_VALUE);
+            }
+        }
+
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            }
+            catch (IOException e) {
+            }
         }
     }
 
